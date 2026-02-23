@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { INITIAL_STATE } from './constants';
 import { AppState } from './types';
 import EditableText from './components/EditableText';
@@ -51,7 +52,7 @@ const DarkAccordionItem: React.FC<{ title: string; children: React.ReactNode; de
   );
 };
 
-const PricingBullet: React.FC<{ text: string }> = ({ text }) => (
+const PricingBullet: React.FC<{ text: React.ReactNode }> = ({ text }) => (
   <li className="flex gap-4 items-start py-1 text-left">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c1d1d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="mt-1 flex-shrink-0">
       <polyline points="20 6 9 17 4 12"></polyline>
@@ -60,6 +61,24 @@ const PricingBullet: React.FC<{ text: string }> = ({ text }) => (
   </li>
 );
 
+const galleryImages = [
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/f0d1fd0-7ad7-b2f-fd2d-2c72e4aee50_111.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/27366a6-eb0b-ad44-8428-2cb65fa24e7_112.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/5158bbb-d42f-101-21-dc431f115e3_113.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/7a73a3c-e877-bc1c-ce6-1151a8a5e6_114.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/3fdff8b-ff64-42ac-cf0b-42fee63a6621_115.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/ca8770-6228-c68-326c-8fd3702d28_116.png"
+];
+
+const testimonialImages = [
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/d1b5abe-ed7b-420-2f8-4350b1ab856_118.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/70741f1-6d24-71a6-384c-c756773c4e4_119.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/d502b3-1c08-0e01-b8ac-55ce00daed0_120.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/6a48ad-2f5-36dc-aceb-ea4536b88c87_121.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/beadc4-763b-e2-d0d0-dfa18e58287a_122.png",
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/7c1cf20-e56e-2bfd-0d4b-4bf16a8854_123.png"
+];
+
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>(INITIAL_STATE);
   const [activeInclusion, setActiveInclusion] = useState('Business Mastermind');
@@ -67,23 +86,85 @@ const App: React.FC = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const testimonialRef = useRef<HTMLDivElement>(null);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [testimonialGalleryIndex, setTestimonialGalleryIndex] = useState(0);
+  const testimonialGalleryRef = useRef<HTMLDivElement>(null);
+
+  const handleTestimonialGalleryScroll = () => {
+    if (testimonialGalleryRef.current) {
+      const { scrollLeft, offsetWidth } = testimonialGalleryRef.current;
+      const index = Math.round(scrollLeft / offsetWidth);
+      setTestimonialGalleryIndex(index);
+    }
+  };
+
+  const nextTestimonialGallery = () => {
+    if (testimonialGalleryRef.current) {
+      const nextIndex = (testimonialGalleryIndex + 1) % testimonialImages.length;
+      testimonialGalleryRef.current.scrollTo({
+        left: nextIndex * testimonialGalleryRef.current.offsetWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const prevTestimonialGallery = () => {
+    if (testimonialGalleryRef.current) {
+      const prevIndex = (testimonialGalleryIndex - 1 + testimonialImages.length) % testimonialImages.length;
+      testimonialGalleryRef.current.scrollTo({
+        left: prevIndex * testimonialGalleryRef.current.offsetWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleGalleryScroll = () => {
+    if (galleryRef.current) {
+      const { scrollLeft, offsetWidth } = galleryRef.current;
+      const index = Math.round(scrollLeft / offsetWidth);
+      setGalleryIndex(index);
+    }
+  };
+
+  const nextGallery = () => {
+    if (galleryRef.current) {
+      const nextIndex = (galleryIndex + 1) % galleryImages.length;
+      galleryRef.current.scrollTo({
+        left: nextIndex * galleryRef.current.offsetWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const prevGallery = () => {
+    if (galleryRef.current) {
+      const prevIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+      galleryRef.current.scrollTo({
+        left: prevIndex * galleryRef.current.offsetWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
   
   const carouselItems = [
     {
-      title: "The rhythm of a membership",
-      body: "You’re not guessing your way through growth anymore. You get live calls, hot seats, and a training vault stacked with the exact answers you keep Googling at midnight. It’s the kind of support that pays for itself because you stop wasting time doing it the slow way."
+      title: "The rhythm that keeps you moving",
+      body: "You know what kills momentum more than anything? Having no one to ask. Inside WMHQ you get live strategy calls, hot seats, and a vault stacked with exactly what you need, right when you need it. No more $9K months because you got stuck and had no one to help you."
     },
     {
-      title: "The depth of a course",
-      body: "These aren’t “watch and forget” modules. They’re the kind of trainings you binge because they finally explain the why behind your stuck points — and the how behind fixing them. You walk away actually doing the thing… not just thinking about it."
+      title: "The strategy that actually converts",
+      body: "Not surface-level content tips. The deep stuff like why your engaged audience isn't buying, where your sales system is leaking, and what your messaging is missing that's costing you consistent $50K months. You leave every audit or call with something you can use tomorrow."
     },
     {
-      title: "The support of a mastermind",
-      body: "When your brain spirals, your content flops, or your offer suddenly feels like a terrible idea… you’re not alone. You get real-time feedback, real-time fixes, and real-time “here’s what to do next” so you move forward instead of melting down."
+      title: "The mirror you've been missing",
+      body: "When you're about to ghost your launch halfway through, drop your prices, or disappear after a big month, this is where you catch it before it costs you. Real-time feedback from women who see exactly what you're doing and love you enough to say so. You come in with a pattern. You leave with a breakthrough."
     },
     {
-      title: "The energy of a private, unfiltered space",
-      body: "This is where ambitious women talk honestly — not the Instagram-friendly, “everything’s fine” version. It’s raw, safe, and zero-performance. You come in with a block and walk out with a breakthrough."
+      title: "The space where it's safe to be honest",
+      body: "Not the Instagram version of your business. The real one. Where revenue is inconsistent, visibility feels terrifying, and something invisible keeps pulling the handbrake. This is where ambitious women finally say that out loud and actually fix it. Zero performance. All progress."
     }
   ];
 
@@ -108,6 +189,25 @@ const App: React.FC = () => {
 
   const nextCard = () => scrollToCard((carouselIndex + 1) % carouselItems.length);
   const prevCard = () => scrollToCard((carouselIndex - 1 + carouselItems.length) % carouselItems.length);
+
+  const handleTestimonialScroll = () => {
+    if (testimonialRef.current) {
+      const { scrollLeft, offsetWidth } = testimonialRef.current;
+      const index = Math.round(scrollLeft / offsetWidth);
+      setTestimonialIndex(index);
+    }
+  };
+
+  const scrollToTestimonial = (index: number) => {
+    if (testimonialRef.current) {
+      const cardWidth = testimonialRef.current.offsetWidth;
+      testimonialRef.current.scrollTo({
+        left: cardWidth * index,
+        behavior: 'smooth'
+      });
+      setTestimonialIndex(index);
+    }
+  };
 
   useEffect(() => {
     if (isModalOpen) {
@@ -319,7 +419,7 @@ const App: React.FC = () => {
     <div className="min-h-screen font-sans selection:bg-[#7c1d1d] selection:text-white bg-cream">
       
       {/* Navigation */}
-      <nav className="fixed w-full z-[100] top-0 px-6 py-8 md:px-16 flex justify-between items-center bg-cream/90 backdrop-blur-md border-b border-black/5">
+      <nav className="fixed w-full z-[100] top-0 px-6 py-8 lg:py-4 md:px-16 flex justify-between items-center bg-cream/90 backdrop-blur-md border-b border-black/5">
         <div className="flex items-center gap-2">
           <div className="font-serif text-2xl tracking-tighter text-gray-900 lowercase font-black italic">wmhq.</div>
         </div>
@@ -334,65 +434,51 @@ const App: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center px-6 pt-40 md:pt-24 overflow-hidden">
-        {/* Subtle Background Video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none opacity-40"
-        >
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-silk-fabric-waving-31627-large.mp4" type="video/mp4" />
-        </video>
-        {/* Soft Wash Overlay */}
-        <div className="absolute inset-0 bg-cream/85 z-[1] pointer-events-none"></div>
-
-        {/* Desktop-only Background Motion Typography */}
-        <div className="hidden lg:block absolute inset-0 pointer-events-none z-[2] overflow-hidden">
-          <svg viewBox="0 0 1400 800" className="w-full h-full overflow-visible">
-            <defs>
-              <path id="whisperArc" d="M -200 400 C 300 750 1100 750 1600 400" />
-              <path id="ribbonPath" d="M 400 850 C 700 750 1200 650 1800 550" />
-            </defs>
-            
-            {/* Curved faint grey whisper text arc */}
-            <text className="font-sans text-[11px] uppercase tracking-[0.7em] fill-gray-400 font-light opacity-[0.25]">
-              <textPath href="#whisperArc" startOffset="0%">
-                <animate attributeName="startOffset" from="0%" to="-100%" dur="120s" repeatCount="indefinite" />
-                {Array(6).fill(ribbonWords.join(" — ") + " — ").join("")}
-              </textPath>
-            </text>
-
-            {/* Substantial black sweeping ribbon in lower-right with white text */}
-            <g className="opacity-[0.82]">
-              <use href="#ribbonPath" fill="none" stroke="black" strokeWidth="85" strokeLinecap="round" />
-              <text className="font-sans text-[11px] uppercase tracking-[0.45em] fill-white font-black">
-                <textPath href="#ribbonPath" startOffset="0%" dy="4">
-                  <animate attributeName="startOffset" from="0%" to="-100%" dur="45s" repeatCount="indefinite" />
-                  {Array(8).fill("12 MONTHS ACCESS — BUSINESS MASTERMIND — SUBCONSCIOUS MASTERY CALL — WEEKLY AUDITS — WMHQ VAULT — HQ COMMUNITY — ").join("")}
-                </textPath>
-              </text>
-            </g>
-          </svg>
+      <section className="relative min-h-screen flex flex-col justify-center items-center lg:items-start px-6 lg:px-32 pt-32 md:pt-24 overflow-hidden">
+        {/* Background Image - Desktop & Mobile */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/abeb17-8f40-77c0-f1a-a51b487bc512_WMHQ_Mockups_7_.png" 
+            className="w-full h-full object-cover lg:object-contain lg:object-right"
+            alt="WMHQ Background"
+            referrerPolicy="no-referrer"
+          />
         </div>
 
-        <div className="max-w-7xl w-full text-center z-10 flex flex-col items-center relative">
-          <h1 className="flex flex-col items-center w-full max-w-[1200px] mx-auto text-center mb-4 px-4">
-            <span className="text-[25px] sm:text-6xl md:text-[76px] lg:text-[84px] font-serif leading-[1.2] sm:leading-[1.05] tracking-tightest text-black block md:whitespace-nowrap break-words w-full">
-              <EditableText value={state.hero.title} onSave={(v) => updateSection('hero', 'title', v)} />
+        {/* Soft Wash Overlay - Mobile Only */}
+        <div className="absolute inset-0 bg-cream/85 z-[1] pointer-events-none lg:hidden"></div>
+
+        <div className="max-w-7xl w-full text-center lg:text-left z-10 flex flex-col items-center lg:items-start relative">
+          <h1 className="flex flex-col items-center lg:items-start w-full max-w-[1200px] mx-auto lg:mx-0 text-center lg:text-left mb-2 lg:mb-4 px-4 lg:px-0">
+            <span className="text-[30px] sm:text-6xl md:text-[76px] lg:text-[80px] font-serif leading-[1.1] sm:leading-[1.05] tracking-tightest text-black block break-words w-full">
+              You built a business <br className="hidden lg:block" /> that works…
             </span>
-            <span className="text-[22px] sm:text-5xl md:text-[68px] lg:text-[76px] font-serif leading-tight sm:leading-[1.05] tracking-tightest text-[#7c1d1d] font-bold block mt-2 sm:mt-1 break-words w-full">
-              and inconsistent income into scalable revenue
+            <span className="text-[26px] sm:text-5xl md:text-[68px] lg:text-[72px] font-serif leading-[1.1] sm:leading-[1.05] tracking-tightest text-[#7c1d1d] font-bold block mt-1 sm:mt-1 break-words w-full">
+              but only when <br className="hidden lg:block" /> you're pushing it.
             </span>
           </h1>
-          <div className="max-w-2xl mx-auto mt-6">
-            <p className="text-base md:text-xl text-black font-medium leading-relaxed tracking-wide text-center">
-              <EditableText value={state.hero.body} onSave={(v) => updateSection('hero', 'body', v)} isTextArea />
-            </p>
+          <div className="max-w-2xl mx-auto lg:mx-0 mt-6 lg:mt-8 space-y-6">
+            <div className="hidden lg:block space-y-4 text-base md:text-xl text-black font-medium leading-relaxed md:leading-relaxed tracking-wide text-center lg:text-left">
+              <p>
+                Woman Mastery HQ holds female entrepreneurs accountable in building a sustainable path to consistent $20K–$50K months.
+              </p>
+              <p>
+                Without rebuilding your revenue from scratch every month, over-delivering to compensate, or pulling back every time it's time to scale.
+              </p>
+            </div>
+            <div className="lg:hidden text-lg text-black font-medium leading-relaxed tracking-wide text-center px-4">
+              <p>
+                A sustainable path to consistent $20K–$50K months without rebuilding from scratch every month.
+              </p>
+            </div>
+            <div className="opacity-70 hidden lg:block">
+              <p className="text-sm md:text-base text-black font-medium leading-relaxed tracking-wide text-center lg:text-left">
+                Inside WMHQ, we tighten your positioning, structure how money consistently flows into your business, and dismantle the subconscious patterns that make growth feel heavier than it should at your level.
+              </p>
+            </div>
           </div>
 
-          <div className="relative w-full h-32 mt-12 flex items-center justify-center">
+          <div className="relative w-full h-16 lg:h-32 mt-8 lg:mt-12 flex items-center justify-center lg:justify-start">
             {/* Mobile-only Linear Marquee - preserved exactly */}
             <div className="lg:hidden absolute inset-0 flex items-center ribbon-container opacity-[0.22]">
               <div className="flex animate-marquee whitespace-nowrap items-center">
@@ -409,7 +495,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative z-20 group">
+            <div className="relative z-20 group hidden lg:block">
               <div className="px-10 py-4 bg-cream/95 backdrop-blur-sm border border-black/5 rounded-full flex gap-6 shadow-[0_15px_40px_-12px_rgba(0,0,0,0.12)] items-center transform transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_50px_-12px_rgba(123,29,29,0.15)]">
                 <span className="text-2xl filter drop-shadow-sm">🤓</span>
                 <span className="text-2xl filter drop-shadow-sm">🧠</span>
@@ -420,19 +506,272 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-8 justify-center items-center mt-10 mb-16 md:mb-0 relative z-20">
+          <div className="flex flex-col md:flex-row gap-8 justify-center lg:justify-start items-center mt-8 lg:mt-10 mb-16 md:mb-0 relative z-20 w-full px-4 lg:px-0">
             <button 
               onClick={scrollToPricing}
-              className="group relative px-16 py-7 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-[#7c1d1d]/30"
+              className="group relative w-full lg:w-auto px-16 py-7 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-[#7c1d1d]/30 min-h-[64px] flex items-center justify-center"
             >
-              GET 12 MONTHS ACCESS
+              <span className="hidden lg:inline">GET 12 MONTHS ACCESS</span>
+              <span className="lg:hidden">→ I WANT ACCESS</span>
             </button>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="px-16 py-7 border-2 border-black/10 text-black text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl flex items-center gap-4 hover:border-black/30 transition-all bg-cream/50 backdrop-blur-sm"
+          </div>
+        </div>
+      </section>
+
+      {/* Section One: Is this you? */}
+      <section className="bg-cream py-24 md:py-32 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 md:mb-24">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-black tracking-tightest leading-tight max-w-3xl mx-auto">
+              Good business. Inconsistent revenue. <br className="hidden md:block" /> You know something's off.
+            </h2>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="group relative bg-white p-12 md:p-16 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.05)] border border-black/5 hover:scale-[1.01] transition-all duration-700">
+              <div className="space-y-12">
+                <h3 className="text-5xl md:text-6xl font-serif italic text-black">Is this you?</h3>
+                <div className="space-y-10">
+                  {[
+                    "Your content gets attention, saves, shares… but not sales. And you can’t work out why followers aren’t becoming buyers.",
+                    "One month you’re at $30K. The next you’re at $9K. You can’t hire. You can’t plan. You definitely can’t relax.",
+                    "You know what to do to grow. The strategy isn’t the problem. But something in you keeps stalling when it’s time to execute.",
+                    "You hit a big month… then shrink. Lower your prices. Go quiet. Get “busy”. Somehow undo the momentum.",
+                    "You say you want the next level. More visibility. Higher prices. Bigger rooms. But when it shows up, your body pulls back."
+                  ].map((text, i) => (
+                    <div key={i} className="flex gap-6 items-start">
+                      <div className="mt-1.5 text-xl text-[#7c1d1d] font-bold flex-shrink-0">✕</div>
+                      <p className="text-xl text-black/70 font-light leading-relaxed">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* VSL Section */}
+      <section className="bg-[#212121] py-24 md:py-32 px-6 overflow-hidden relative z-20">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tightest leading-tight mb-12">
+            Watch the breakdown.
+          </h2>
+          <div className="max-w-[900px] mx-auto relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
+            <iframe
+              src="https://www.loom.com/embed/8744a2d230244af685987a87d08df158"
+              frameBorder="0"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      {/* Cycle Diagram Section */}
+      <section className="bg-[#f9f7f2] py-12 lg:py-20 px-6 overflow-hidden relative z-20">
+        <div className="max-w-7xl mx-auto lg:border lg:border-black/10 lg:rounded-[6rem] lg:p-16">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            {/* Left: Headline */}
+            <div className="lg:w-2/5 space-y-6">
+              <h2 className="text-[#111111] text-4xl md:text-5xl lg:text-6xl font-serif leading-[1.1] tracking-tightest max-w-md">
+                You're at risk of <span className="text-[#7c1d1d] italic">getting trapped</span> in a cycle that keeps your income and results exactly where it is:
+              </h2>
+            </div>
+
+            {/* Right: Diagram */}
+            <div className="lg:w-3/5 relative w-full max-w-3xl mx-auto lg:mx-0">
+              {/* Desktop Circular Layout */}
+              <div className="hidden lg:block relative h-[850px] w-full">
+                {/* Editorial Arrows */}
+                <svg viewBox="0 0 600 850" className="absolute inset-0 w-full h-full pointer-events-none">
+                  <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orientation="auto">
+                      <polygon points="0 0, 10 3.5, 0 7" fill="#111111" fillOpacity="0.4" />
+                    </marker>
+                  </defs>
+                  {/* Arrow 01 -> 02 */}
+                  <path 
+                    d="M 280 150 Q 300 130 320 150" 
+                    fill="none" 
+                    stroke="#111111" 
+                    strokeWidth="1.2" 
+                    strokeOpacity="0.35"
+                    markerEnd="url(#arrowhead)"
+                  />
+                  {/* Arrow 02 -> 03 */}
+                  <path 
+                    d="M 450 350 Q 450 500 350 550" 
+                    fill="none" 
+                    stroke="#111111" 
+                    strokeWidth="1.2" 
+                    strokeOpacity="0.35"
+                    markerEnd="url(#arrowhead)"
+                  />
+                </svg>
+
+                {/* Step 01: Top-Left */}
+                <div className="absolute top-[5%] left-[0%] w-[45%] z-10">
+                  <div className="bg-[#efd8e6] p-10 rounded-[3.5rem] shadow-sm space-y-6 transform hover:scale-[1.02] transition-transform duration-500">
+                    <div className="text-5xl font-serif font-bold text-[#111111]">01.</div>
+                    <p className="text-[#111111] text-lg leading-relaxed font-sans">
+                      You have a big month. $8K, $15K, $25K, maybe more. But instead of building on it, something shifts aka you get sick, go quiet, or suddenly decide your prices are too high. The momentum dies before you even notice you killed it.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 02: Top-Right */}
+                <div className="absolute top-[5%] right-[0%] w-[45%] z-10">
+                  <div className="bg-[#fdf2f8] border border-black/5 p-10 rounded-[3.5rem] shadow-sm space-y-6 transform hover:scale-[1.02] transition-transform duration-500">
+                    <div className="text-5xl font-serif font-bold text-[#111111]">02.</div>
+                    <p className="text-[#111111] text-lg leading-relaxed font-sans">
+                      So you push harder. More content, more launching, more showing up. Revenue creeps back up. You tell yourself this time will be different. You start planning what consistent $30K+ months would feel like.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 03: Bottom-Center */}
+                <div className="absolute top-[55%] left-[27.5%] w-[45%] z-10">
+                  <div className="bg-[#fce7f3] p-10 rounded-[3.5rem] shadow-sm space-y-6 transform hover:scale-[1.02] transition-transform duration-500">
+                    <div className="text-5xl font-serif font-bold text-[#111111]">03.</div>
+                    <p className="text-[#111111] text-lg leading-relaxed font-sans">
+                      Then the next big opportunity appears like a pitch, an opportunity for more visibility, a launch and suddenly you pull the handbrake, You're back at square one wondering why someone as capable as you keeps ending up here.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Stacked Layout */}
+              <div className="lg:hidden space-y-8 relative">
+                {/* Subtle vertical connector */}
+                <div className="absolute left-10 top-20 bottom-20 w-px border-l border-dashed border-black/10"></div>
+
+                <div className="bg-[#efd8e6] p-8 rounded-[2.5rem] shadow-sm space-y-4 relative z-10">
+                  <div className="text-4xl font-serif font-bold text-[#111111]">01.</div>
+                  <p className="text-[#111111] text-base leading-relaxed font-sans">
+                    You have a big month. $8K, $15K, $25K, maybe more. But instead of building on it, something shifts aka you get sick, go quiet, or suddenly decide your prices are too high. The momentum dies before you even notice you killed it.
+                  </p>
+                </div>
+
+                <div className="bg-[#f9f6f1] border border-black/5 p-8 rounded-[2.5rem] shadow-sm space-y-4 relative z-10">
+                  <div className="text-4xl font-serif font-bold text-[#111111]">02.</div>
+                  <p className="text-[#111111] text-base leading-relaxed font-sans">
+                    So you push harder. More content, more launching, more showing up. Revenue creeps back up. You tell yourself this time will be different. You start planning what consistent $30K+ months would feel like.
+                  </p>
+                </div>
+
+                <div className="bg-[#efd8e6] p-8 rounded-[2.5rem] shadow-sm space-y-4 relative z-10">
+                  <div className="text-4xl font-serif font-bold text-[#111111]">03.</div>
+                  <p className="text-[#111111] text-base leading-relaxed font-sans">
+                    Then the next big opportunity appears like a pitch, an opportunity for more visibility, a launch and suddenly you pull the handbrake, You're back at square one wondering why someone as capable as you keeps ending up here.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* New Testimonial Grid/Carousel Section */}
+      <section className="bg-[#f2f2f2] py-12 md:py-24 px-6 overflow-hidden relative z-20">
+        <div className="max-w-7xl mx-auto">
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-3 gap-6">
+            {testimonialImages.map((src, i) => (
+              <div key={i} className="bg-white border border-black/5 rounded-[2.5rem] p-8 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow duration-500 aspect-video">
+                <img 
+                  src={src} 
+                  alt={`Testimonial ${i + 1}`} 
+                  className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Carousel */}
+          <div className="md:hidden relative">
+            <div 
+              ref={testimonialGalleryRef}
+              onScroll={handleTestimonialGalleryScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-0"
             >
-              WATCH THE VISION
-            </button>
+              {testimonialImages.map((src, i) => (
+                <div key={i} className="min-w-full snap-center px-2">
+                  <div className="bg-white border border-black/5 rounded-[2.5rem] p-8 flex items-center justify-center min-h-[350px] shadow-sm aspect-square">
+                    <img 
+                      src={src} 
+                      alt={`Testimonial ${i + 1}`} 
+                      className="w-full h-full object-contain"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Arrows */}
+            <div className="flex justify-between items-center mt-8 px-4">
+              <button 
+                onClick={prevTestimonialGallery}
+                className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] transition-all active:scale-95"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              
+              {/* Dots */}
+              <div className="flex gap-2">
+                {testimonialImages.map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-1.5 rounded-full transition-all duration-300 ${testimonialGalleryIndex === i ? 'w-8 bg-[#7c1d1d]' : 'w-2 bg-gray-300'}`}
+                  />
+                ))}
+              </div>
+
+              <button 
+                onClick={nextTestimonialGallery}
+                className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] transition-all active:scale-95"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f9f6f1] py-12 lg:py-24 px-4 md:px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto bg-[#efd8e6] rounded-[40px] md:rounded-[60px] lg:rounded-[80px] p-8 md:p-16 lg:p-24 shadow-sm">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            {/* Left: Text Content */}
+            <div className="flex-1 text-center lg:text-left space-y-10">
+              <div className="space-y-6">
+                <h3 className="text-[#7c1d1d] text-xs md:text-sm font-bold tracking-[0.4em] uppercase">
+                  INSIDE WMHQ,
+                </h3>
+                <h2 className="text-[#111111] text-[24px] md:text-[42px] lg:text-[52px] font-serif leading-[1.2] tracking-tightest max-w-4xl mx-auto lg:mx-0">
+                  Join Jess Pinili and finally figure out why the business is good but the revenue isn't consistent. We build the predictable income structure you've been missing and clear the patterns that have been keeping you right below your next level.
+                </h2>
+              </div>
+              
+              <a 
+                href="#wmhq-investment"
+                className="group relative px-14 py-6 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.4em] font-black rounded-full hover:scale-105 transition-all shadow-xl shadow-[#7c1d1d]/20 flex items-center gap-3 mx-auto lg:mx-0 w-fit"
+              >
+                <span>→ LET'S DO THIS</span>
+              </a>
+            </div>
+
+            {/* Right: Image */}
+            <div className="flex-1 w-full max-w-xl lg:max-w-none">
+              <div className="relative rounded-[40px] md:rounded-[60px] lg:rounded-[80px] overflow-hidden shadow-sm bg-white/20">
+                <img 
+                  src="https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/file-uploads/themes/2162592122/settings_images/5b1abd-4cf-cfd7-fe14-112df25a3f_WMHQ_Mockups_11_.png" 
+                  alt="Woman Mastery Methodology"
+                  className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -450,9 +789,10 @@ const App: React.FC = () => {
               <span className="italic opacity-40">in every season of business.</span>
             </h2>
             <p className="text-xl text-gray-500 md:text-gray-400 font-light leading-relaxed max-w-lg">
-              Seamless strategy + subconscious mastery inside every phase of your brand. From messaging to money to identity. <span className="font-bold text-[#7c1d1d]">You get complete instant access to support & resources for 12 months.</span>
+              WMHQ teaches you how to sell to the audience you already have and stop feeling like everything could drop at any minute.
             </p>
             <button 
+              onClick={scrollToPricing}
               className="px-10 py-5 bg-[#7c1d1d] md:bg-white text-white md:text-black text-[11px] uppercase tracking-[0.5em] font-black rounded-2xl hover:opacity-90 transition-all"
             >
               JOIN WMHQ NOW
@@ -510,39 +850,229 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* New Feature Row */}
+        <div className="max-w-7xl mx-auto mt-32 mb-12 relative z-10 px-6 lg:px-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {[
+              {
+                num: "01",
+                title: "Strategy",
+                body: "We audit your messaging, offers and sales ecosystem live so your engaged audience actually converts into paying clients."
+              },
+              {
+                num: "02",
+                title: "Subconscious",
+                body: "Stop disappearing from your business right before the breakthrough by addressing the pattern underneath it, not just pushing through it using our proven frameworks and live calls."
+              },
+              {
+                num: "03",
+                title: "Scale",
+                body: "Build a profitable and sustainable business that thrives in every season of life."
+              }
+            ].map((card, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, rotateX: -10, y: 14, transformPerspective: 900 }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: [0.2, 0.8, 0.2, 1], 
+                  delay: idx * 0.15 
+                }}
+                className="bg-[#f2f2f2] p-12 rounded-[2rem] space-y-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border border-black/[0.02] flex flex-col h-full"
+              >
+                <div className="space-y-2">
+                  <span className="text-[#7c1d1d] text-xs font-serif block opacity-50">{card.num}</span>
+                  <h4 className="text-[#7c1d1d] text-3xl font-serif leading-none">{card.title}</h4>
+                </div>
+                <p className="text-[#1a1a1a] text-lg leading-[1.8] font-sans opacity-90">
+                  {card.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* FAQ Accordion Section */}
-      <section className="bg-[#f9f7f2] py-32 px-6 border-t border-black/5 relative z-20">
+      {/* Section Two: You will learn how to */}
+      <section className="bg-cream py-24 md:py-32 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="max-w-5xl mx-auto space-y-4">
-            <DarkAccordionItem title="IS THIS EVEN FOR ME?">
-              <div className="space-y-6">
-                <p><span className="font-bold">The Myth:</span> “I’m not far enough along yet. This is for women who already have it figured out — a big audience, consistent income, or at least know what they’re doing. I should wait until I’m more ‘ready.’”</p>
-                <p><span className="font-bold">The Truth:</span> You don’t need to be further along. You need support that meets you where you are. The women who join “when they’re ready” are still waiting two years later. The women who join now are running $30K months by this time next year.</p>
+          <div className="text-center mb-16 md:mb-24">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-black tracking-tightest leading-tight max-w-4xl mx-auto">
+              You've built, launched, shown up, and delivered. <br className="hidden md:block" /> And somehow it still comes down to you adding more to your to-do list.
+            </h2>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="group relative bg-[#0a0a0a] p-12 md:p-16 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] border border-white/5 hover:scale-[1.01] transition-all duration-700 overflow-hidden">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#7c1d1d]/5 blur-[120px] rounded-full group-hover:bg-[#7c1d1d]/10 transition-all duration-700"></div>
+              <div className="space-y-12 relative z-10">
+                <h3 className="text-5xl md:text-6xl font-serif italic text-white">You will learn how to:</h3>
+                <div className="space-y-10">
+                  {[
+                    "Turn engaged followers into consistent buyers. No posting 10x a day. No launching every quarter. Just a system that converts.",
+                    "Create revenue you can actually plan around. Build a sales ecosystem designed for predictable $50K+ months so you can hire, rest, and stop checking Stripe at 2am.",
+                    "Break your income ceiling for good. Identify the exact subconscious pattern keeping you stuck and rewire it so consistency becomes your baseline.",
+                    "Stop sabotaging right before the breakthrough. Catch yourself before you ghost a launch, drop your prices, or disappear when it matters most.",
+                    "Sell without guilt. Without second-guessing. Without shrinking. Start saying yes to opportunities your current self keeps talking you out of."
+                  ].map((text, i) => (
+                    <div key={i} className="flex gap-6 items-start">
+                      <div className="mt-3 w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0"></div>
+                      <p className="text-xl text-white/70 font-light leading-relaxed">{text}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </DarkAccordionItem>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Evolution Section */}
+      <section className="bg-[#fdf2f8] py-32 md:py-48 px-6 overflow-hidden relative">
+        <div className="absolute top-0 left-0 w-full overflow-hidden opacity-[0.06] pointer-events-none py-12 select-none border-b border-black/5 bg-cream/50 backdrop-blur-[2px] z-20">
+          <div className="flex animate-marquee whitespace-nowrap gap-24">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex gap-24 items-center">
+                {ribbonWords.map(w => (
+                  <span key={w} className="text-[10px] uppercase tracking-[0.6em] font-black text-black">{w} — </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto relative z-10 pt-20">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-black tracking-tightest leading-tight max-w-3xl mx-auto">
+              Your best months aren't flukes. <br className="hidden md:block" /> You just don't know how to repeat them yet.
+            </h2>
+          </div>
+          <div className="flex flex-col lg:flex-row gap-16 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 w-full lg:w-72">
+              {phases.map((phase, idx) => (
+                <button
+                  key={phase.id}
+                  onClick={() => setActivePhase(idx)}
+                  className={`flex flex-col justify-center px-8 py-7 rounded-2xl border-2 transition-all duration-500 group h-32 md:h-36 ${
+                    activePhase === idx 
+                    ? 'bg-[#0d0d0d] border-[#7c1d1d]/40 text-white shadow-2xl scale-105 z-20' 
+                    : 'bg-[#f7f4f0] border-black/5 text-gray-400 hover:border-black/20 hover:text-black hover:bg-white'
+                  }`}
+                >
+                  <div className={`text-[10px] uppercase tracking-widest font-black mb-2 transition-opacity ${activePhase === idx ? 'opacity-60 text-red-400' : 'opacity-40 group-hover:opacity-100'}`}>Phase {phase.id}</div>
+                  <div className={`font-serif italic text-xl md:text-2xl leading-tight ${activePhase === idx ? 'text-white' : ''}`}>
+                    {phase.tag}
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex-1 relative min-h-[600px] w-full">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none -z-10">
+                <div className="flex flex-col gap-10 animate-slow-sway">
+                  <div className="flex gap-20 animate-marquee whitespace-nowrap">
+                    {[...evolutionWords, ...evolutionWords].map((word, i) => (
+                      <span key={i} className="text-8xl md:text-[14rem] font-serif italic text-black uppercase opacity-20">{word}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div key={activePhase} className="bg-white p-12 md:p-20 rounded-[4rem] shadow-[0_60px_120px_-30px_rgba(0,0,0,0.1)] border border-black/[0.03] transform transition-all duration-700 animate-in fade-in slide-in-from-right-8 h-full flex flex-col justify-center">
+                <div className="max-w-3xl space-y-14">
+                  <div className="space-y-8">
+                    <div className="inline-block px-5 py-2 bg-[#7c1d1d]/5 text-[#7c1d1d] text-[11px] uppercase tracking-[0.5em] font-black rounded-full border border-[#7c1d1d]/10">
+                      PHASE 0{phases[activePhase].id} — {phases[activePhase].tag}
+                    </div>
+                    <h3 className="text-5xl md:text-7xl lg:text-8xl font-serif text-black leading-none italic tracking-tightest">
+                      {phases[activePhase].title}
+                    </h3>
+                    <p className="text-2xl md:text-4xl text-[#7c1d1d] font-serif italic opacity-90 leading-[1.3] max-w-2xl">
+                      {phases[activePhase].intro}
+                    </p>
+                  </div>
+                  <ul className="space-y-8">
+                    {phases[activePhase].bullets.map((bullet, i) => (
+                      <li key={i} className="flex gap-8 items-start group">
+                        <div className="mt-3 w-2 h-2 rounded-full bg-[#7c1d1d] flex-shrink-0 group-hover:scale-150 transition-transform"></div>
+                        <span className="text-xl md:text-2xl text-gray-700 font-light leading-relaxed tracking-wide">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-20 flex justify-center">
+            <button 
+              onClick={scrollToPricing}
+              className="px-14 py-6 bg-black text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:scale-105 transition-all shadow-xl shadow-black/10"
+            >
+              GET 12 MONTHS ACCESS
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Hybrid Carousel Section */}
+      <section className="bg-[#f2f2f2] py-24 px-6 md:px-12 lg:py-40">
+        <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+          <div className="lg:w-1/3 space-y-8">
+            <h3 className="text-[#7c1d1d] text-4xl md:text-5xl lg:text-6xl font-serif italic leading-[1.1] tracking-tightest max-w-md">
+              More than a course. Deeper than a mastermind. Better than a membership.
+            </h3>
+            <p className="text-[#7c1d1d] text-xl md:text-2xl font-light opacity-80 leading-relaxed max-w-lg">
+              WMHQ is all three, designed to meet you where growth actually happens.
+            </p>
+          </div>
+          
+          <div className="lg:w-2/3 w-full relative group">
+            <div className="absolute top-0 right-0 bottom-0 w-32 bg-gradient-to-l from-[#f2f2f2] to-transparent pointer-events-none z-20"></div>
             
-            <DarkAccordionItem title="I’VE TRIED EVERYTHING. WHY WOULD THIS BE DIFFERENT?">
-              <div className="space-y-6">
-                <p><span className="font-bold">The Myth:</span> “I’ve bought the courses, hired the coaches, done the mindset work, learned the strategies… and I’m still stuck. Maybe it’s me. Maybe nothing will actually work.”</p>
-                <p><span className="font-bold">The Truth:</span> It’s not that nothing works, you were only getting half the solution. Business courses give you strategy but don’t address why you can’t execute. Mindset coaching helps you feel better but doesn’t build a business model. WMHQ treats your mindset and marketing as the same system, so you finally get both.</p>
+            <div 
+              ref={carouselRef}
+              className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-12 cursor-grab active:cursor-grabbing select-none"
+              onScroll={handleScroll}
+            >
+              {carouselItems.map((item, idx) => (
+                <div 
+                  key={idx} 
+                  className={`min-w-[85%] md:min-w-[450px] snap-center bg-white p-10 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.05)] border border-black/5 flex flex-col justify-center gap-10 transition-all duration-700 ${carouselIndex === idx ? 'scale-100 opacity-100' : 'scale-95 opacity-50'}`}
+                >
+                  <h4 className="text-3xl md:text-4xl font-serif italic text-black leading-tight">
+                    {item.title}
+                  </h4>
+                  <p className="text-xl text-gray-600 font-light leading-relaxed">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-6 relative z-30">
+              <div className="flex gap-3">
+                {carouselItems.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => scrollToCard(idx)}
+                    className={`h-1.5 transition-all duration-500 rounded-full ${carouselIndex === idx ? 'w-12 bg-[#7c1d1d]' : 'w-6 bg-black/10 hover:bg-black/20'}`}
+                  />
+                ))}
               </div>
-            </DarkAccordionItem>
-            
-            <DarkAccordionItem title="I DON’T HAVE TIME FOR ANOTHER PROGRAM.">
-              <div className="space-y-6">
-                <p><span className="font-bold">The Myth:</span> “I’m already drowning. I can barely keep up with posting, client work/customer service, life. Adding another membership will just overwhelm me more. I need to get my shit together first, then I can invest.”</p>
-                <p><span className="font-bold">The Truth:</span> You’re overwhelmed because you’re doing it alone. The right support doesn’t add to your plate, it clears it. You stop guessing what to post, stop consuming 47 free trainings, and start executing with clarity. You don’t need more time. You need to stop wasting the time you have.</p>
+              <div className="hidden lg:flex gap-4">
+                <button 
+                  onClick={prevCard}
+                  className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] hover:bg-[#7c1d1d] hover:text-white transition-all"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button 
+                  onClick={nextCard}
+                  className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] hover:bg-[#7c1d1d] hover:text-white transition-all"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
               </div>
-            </DarkAccordionItem>
-            
-            <DarkAccordionItem title="WHAT IF I INVEST AND IT DOESN’T WORK FOR ME?">
-              <div className="space-y-6">
-                <p><span className="font-bold">The Myth:</span> “I’ve invested before and didn’t get results. What if I join, don’t do the work, and I’m just out $5K with nothing to show for it? What if I’m the problem?”</p>
-                <p><span className="font-bold">The Truth:</span> You’re not doing this alone anymore. You get bi-weekly live coaching, real-time feedback, subconscious work that dissolves the patterns making you quit, and a community that won’t let you disappear. The real question isn’t “what if it doesn’t work?” It’s: “How much longer are you willing to stay stuck hoping something changes without changing anything?”</p>
-              </div>
-            </DarkAccordionItem>
+            </div>
           </div>
         </div>
       </section>
@@ -553,8 +1083,8 @@ const App: React.FC = () => {
           <div className="flex flex-col lg:flex-row gap-24 xl:gap-32">
             <div className="flex-1 space-y-20 lg:space-y-24">
               <div className="space-y-4">
-                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif text-white tracking-tightest leading-[1.1] sm:leading-[1.05] max-w-2xl break-words">
-                  WMHQ is where female entrepreneurs build differently.
+                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif text-white tracking-tightest leading-[1.1] sm:leading-[1.05] max-w-xl break-words">
+                  WMHQ is where female entrepreneurs <br className="hidden md:block" /> build differently.
                 </h2>
                 <p className="text-[#7c1d1d] text-xl md:text-2xl font-serif tracking-tight leading-none">
                   12 months of complete access
@@ -645,159 +1175,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Hybrid Carousel Section */}
-      <section className="bg-[#f2f2f2] py-24 px-6 md:px-12 lg:py-40">
-        <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-          <div className="lg:w-1/3 space-y-8">
-            <h3 className="text-[#7c1d1d] text-4xl md:text-5xl lg:text-6xl font-serif italic leading-[1.1] tracking-tightest">
-              More than a course. Deeper than a mastermind. Better than a membership.
-            </h3>
-            <p className="text-[#7c1d1d] text-xl md:text-2xl font-light opacity-80 leading-relaxed max-w-lg">
-              WMHQ is all three, designed to meet you where growth actually happens.
-            </p>
-          </div>
-          
-          <div className="lg:w-2/3 w-full relative group">
-            <div className="absolute top-0 right-0 bottom-0 w-32 bg-gradient-to-l from-[#f2f2f2] to-transparent pointer-events-none z-20"></div>
-            
-            <div 
-              ref={carouselRef}
-              className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-12 cursor-grab active:cursor-grabbing select-none"
-              onScroll={handleScroll}
-            >
-              {carouselItems.map((item, idx) => (
-                <div 
-                  key={idx} 
-                  className={`min-w-[85%] md:min-w-[450px] snap-center bg-white p-10 md:p-14 rounded-[3.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.05)] border border-black/5 flex flex-col justify-center gap-10 transition-all duration-700 ${carouselIndex === idx ? 'scale-100 opacity-100' : 'scale-95 opacity-50'}`}
-                >
-                  <h4 className="text-3xl md:text-4xl font-serif italic text-black leading-tight">
-                    {item.title}
-                  </h4>
-                  <p className="text-xl text-gray-600 font-light leading-relaxed">
-                    {item.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-6 relative z-30">
-              <div className="flex gap-3">
-                {carouselItems.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => scrollToCard(idx)}
-                    className={`h-1.5 transition-all duration-500 rounded-full ${carouselIndex === idx ? 'w-12 bg-[#7c1d1d]' : 'w-6 bg-black/10 hover:bg-black/20'}`}
-                  />
-                ))}
-              </div>
-              <div className="hidden lg:flex gap-4">
-                <button 
-                  onClick={prevCard}
-                  className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] hover:bg-[#7c1d1d] hover:text-white transition-all"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <button 
-                  onClick={nextCard}
-                  className="w-12 h-12 rounded-full border border-[#7c1d1d]/20 flex items-center justify-center text-[#7c1d1d] hover:bg-[#7c1d1d] hover:text-white transition-all"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Evolution Section */}
-      <section className="bg-cream py-32 md:py-48 px-6 overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full overflow-hidden opacity-[0.06] pointer-events-none py-12 select-none border-b border-black/5 bg-cream/50 backdrop-blur-[2px] z-20">
-          <div className="flex animate-marquee whitespace-nowrap gap-24">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="flex gap-24 items-center">
-                {ribbonWords.map(w => (
-                  <span key={w} className="text-[10px] uppercase tracking-[0.6em] font-black text-black">{w} — </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto relative z-10 pt-20">
-          <div className="text-center mb-24 space-y-4">
-            <h2 className="text-6xl md:text-8xl font-serif text-black tracking-tightest leading-none">
-              The WMHQ Evolution
-            </h2>
-            <p className="text-gray-500 text-[11px] uppercase tracking-[0.4em] font-bold">
-              You don’t scale in one move. You evolve in phases.
-            </p>
-          </div>
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4 w-full lg:w-72">
-              {phases.map((phase, idx) => (
-                <button
-                  key={phase.id}
-                  onClick={() => setActivePhase(idx)}
-                  className={`flex flex-col justify-center px-8 py-7 rounded-2xl border-2 transition-all duration-500 group h-32 md:h-36 ${
-                    activePhase === idx 
-                    ? 'bg-[#0d0d0d] border-[#7c1d1d]/40 text-white shadow-2xl scale-105 z-20' 
-                    : 'bg-[#f7f4f0] border-black/5 text-gray-400 hover:border-black/20 hover:text-black hover:bg-white'
-                  }`}
-                >
-                  <div className={`text-[10px] uppercase tracking-widest font-black mb-2 transition-opacity ${activePhase === idx ? 'opacity-60 text-red-400' : 'opacity-40 group-hover:opacity-100'}`}>Phase {phase.id}</div>
-                  <div className={`font-serif italic text-xl md:text-2xl leading-tight ${activePhase === idx ? 'text-white' : ''}`}>
-                    {phase.tag}
-                  </div>
-                </button>
-              ))}
-            </div>
-            <div className="flex-1 relative min-h-[600px] w-full">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none -z-10">
-                <div className="flex flex-col gap-10 animate-slow-sway">
-                  <div className="flex gap-20 animate-marquee whitespace-nowrap">
-                    {[...evolutionWords, ...evolutionWords].map((word, i) => (
-                      <span key={i} className="text-8xl md:text-[14rem] font-serif italic text-black uppercase opacity-20">{word}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div key={activePhase} className="bg-white p-12 md:p-20 rounded-[4rem] shadow-[0_60px_120px_-30px_rgba(0,0,0,0.1)] border border-black/[0.03] transform transition-all duration-700 animate-in fade-in slide-in-from-right-8 h-full flex flex-col justify-center">
-                <div className="max-w-3xl space-y-14">
-                  <div className="space-y-8">
-                    <div className="inline-block px-5 py-2 bg-[#7c1d1d]/5 text-[#7c1d1d] text-[11px] uppercase tracking-[0.5em] font-black rounded-full border border-[#7c1d1d]/10">
-                      PHASE 0{phases[activePhase].id} — {phases[activePhase].tag}
-                    </div>
-                    <h3 className="text-5xl md:text-7xl lg:text-8xl font-serif text-black leading-none italic tracking-tightest">
-                      {phases[activePhase].title}
-                    </h3>
-                    <p className="text-2xl md:text-4xl text-[#7c1d1d] font-serif italic opacity-90 leading-[1.3] max-w-2xl">
-                      {phases[activePhase].intro}
-                    </p>
-                  </div>
-                  <ul className="space-y-8">
-                    {phases[activePhase].bullets.map((bullet, i) => (
-                      <li key={i} className="flex gap-8 items-start group">
-                        <div className="mt-3 w-2 h-2 rounded-full bg-[#7c1d1d] flex-shrink-0 group-hover:scale-150 transition-transform"></div>
-                        <span className="text-xl md:text-2xl text-gray-700 font-light leading-relaxed tracking-wide">{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-20 flex justify-center">
-            <button 
-              onClick={scrollToPricing}
-              className="px-14 py-6 bg-black text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:scale-105 transition-all shadow-xl shadow-black/10"
-            >
-              GET 12 MONTHS ACCESS
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Trust Divider Section */}
-      <section className="bg-[#da91ab] py-14 overflow-hidden w-full relative z-30">
+      <section className="bg-[#efd8e6] py-14 overflow-hidden w-full relative z-30">
         <div className="max-w-7xl mx-auto text-center mb-8">
           <h3 className="text-[#f2f2f2] font-dm text-[13px] md:text-[15px] uppercase tracking-[0.4em] font-bold">
             WMHQ Methodology trusted by 400+ female entrepreneurs.
@@ -821,132 +1200,90 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Strategy Meets Subconscious Section */}
-      <section className="bg-cream py-40 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] select-none flex items-center">
-          <div className="flex animate-marquee whitespace-nowrap gap-32">
-            {[1, 2, 3].map(set => (
-              <div key={set} className="flex gap-32 items-center">
-                {ribbonWords.map(w => (
-                  <span key={w} className="text-[12rem] font-serif italic uppercase text-black">{w}</span>
-                ))}
+      {/* Editorial Gallery Section */}
+      <section className="bg-[#f2f2f2] pt-16 pb-8 md:pt-20 md:pb-12 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-3 gap-4 md:gap-6">
+            {galleryImages.map((src, i) => (
+              <div key={i} className="border border-black rounded-[2rem] p-6 md:p-8 bg-white flex items-center justify-center">
+                <img 
+                  src={src} 
+                  alt={`Gallery ${i + 1}`} 
+                  className="w-full h-auto object-contain"
+                  referrerPolicy="no-referrer"
+                />
               </div>
             ))}
           </div>
-        </div>
-        <div className="max-w-[1550px] mx-auto relative z-10">
-          <div className="text-center mb-32 space-y-6">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-serif text-black tracking-tightest leading-none md:whitespace-nowrap flex flex-wrap md:flex-nowrap justify-center items-center gap-x-2 md:gap-x-4">
-              <span>Where</span>
-              <span className="relative inline-block px-4 py-2">
-                Strategy
-                <svg className="absolute inset-0 w-[115%] h-[160%] -top-[30%] -left-[7.5%] pointer-events-none overflow-visible" viewBox="0 0 100 60">
-                  <path 
-                    d="M 5,30 C 5,12 85,8 92,28 C 96,52 15,55 12,32 C 10,25 20,20 40,18" 
-                    fill="none" 
-                    stroke="#8B1E1E" 
-                    strokeWidth="1.8" 
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="opacity-95"
-                  />
-                </svg>
-              </span>
-              <span>Meets</span>
-              <span className="relative inline-block px-4 py-2">
-                Subconscious
-                <svg className="absolute w-full h-4 -bottom-2 left-0 pointer-events-none overflow-visible" viewBox="0 0 100 20">
-                  <path 
-                    d="M 2,10 C 15,8 35,14 60,10 C 85,6 98,12 98,12 M 5,14 C 20,17 50,13 75,15 C 90,16 95,14 95,14" 
-                    fill="none" 
-                    stroke="#8B1E1E" 
-                    strokeWidth="1.8" 
-                    strokeLinecap="round"
-                    className="opacity-95"
-                  />
-                </svg>
-              </span>
-            </h2>
-            <p className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] text-[#6e6e6e] font-sans max-w-none mx-auto mt-10 leading-relaxed tracking-wide text-center">
-              Most spaces give you strategy without addressing WHY you won't execute it... OR they give you mindset work without a business model that actually scales. Spoiler: You need BOTH or nothing scales.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-stretch">
-            <div className="group relative bg-white p-12 md:p-16 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.05)] border border-black/5 hover:scale-[1.01] transition-all duration-700">
-              <div className="space-y-12">
-                <div className="text-[11px] uppercase tracking-[0.6em] text-[#7c1d1d] font-black opacity-60">WMHQ Methodology</div>
-                <h3 className="text-5xl md:text-6xl font-serif italic text-black">You will learn how to:</h3>
-                <div className="space-y-10">
-                  {[
-                    { label: "Build a business that scales without running yourself into the ground", body: "Infuse strategy with subconscious strategy so your nervous system stops sabotaging your sales, pricing, and visibility—and you can finally take a weekend off without refreshing Stripe every 20 minutes." },
-                    { label: "Simplify your business foundations so scaling doesn't require 47 open tabs", body: "Streamline your offers, systems, and operations so you're not Frankensteining together a dozen tools, platforms, and workflows just to onboard one client or fulfil one order." },
-                    { label: "Turn your engaged audience into actual revenue", body: "Stop building fans who love your content but never buy, and start converting followers into paying clients without posting 10x a day, launching every quarter, or burning out from the all-or-nothing mentality." },
-                    { label: "Break through your $12K–$35K income ceiling", body: "Identify the exact subconscious pattern keeping you stuck in revenue swings and rewire it so $50K–$80K months become your baseline—not a lucky fluke you can't explain or repeat." },
-                    { label: "Show up visible without your body shutting down", body: "Overcome visibility fears, price at your actual worth, and pitch $10K–$20K opportunities without your nervous system making you ghost prospects or “forget” to send the proposal." },
-                    { label: "Create predictable cash flow you can actually plan around", body: "Build sales ecosystem that generates consistent $40K–$70K months so you can hire that VA, book the holiday, and stop panicking about next month's revenue at 2am." },
-                    { label: "Stop self-sabotaging right before breakthroughs", body: "Recognise when you're about to drop your prices mid-pitch, get mysteriously sick after a $40K month, or disappear from your inbox—and choose differently before you blow the opportunity." },
-                    { label: "Hold money without guilt, panic, or the urge to immediately reinvest it all", body: "Keep what you earn in your account without guilt-spending to prove you're still “normal,” giving it away to feel safer, or reinvesting before you've even paid yourself." },
-                    { label: "Build authority that makes ideal clients and customers seek you out", body: "Position yourself so qualified buyers come pre-sold and ready to invest in your services or products—instead of you chasing lukewarm leads who “love this but need to think about it” for six months." }
-                  ].map((item, i) => (
-                    <div key={i} className="flex gap-6 items-start">
-                      <div className="mt-3 w-1.5 h-1.5 rounded-full bg-[#7c1d1d] flex-shrink-0"></div>
-                      <div>
-                        {item.label && <h4 className="text-xl font-serif italic text-black/90 mb-2">{item.label}</h4>}
-                        {item.body && <p className="text-xl text-black/70 font-light leading-relaxed">{item.body}</p>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
 
-            <div className="group relative bg-[#0a0a0a] p-12 md:p-16 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.2)] border border-white/5 hover:scale-[1.01] transition-all duration-700 overflow-hidden">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#7c1d1d]/5 blur-[120px] rounded-full group-hover:bg-[#7c1d1d]/10 transition-all duration-700"></div>
-              <div className="space-y-12 relative z-10">
-                <div className="text-[11px] uppercase tracking-[0.6em] text-red-400 font-black opacity-60">This Is For You If</div>
-                <h3 className="text-5xl md:text-6xl font-serif italic text-white">Can you relate:</h3>
-                <div className="flex flex-col gap-4">
-                  {[
-                    { text: "You've built something real, but growth feels harder than creation ever did: You have a signature offer, testimonials, and clients who rave about you but getting consistent buyers feels like climbing Everest", width: "98%" },
-                    { text: "Your revenue is all over the place: $30K one month, $9K next. You can't plan, can't hire confidently, and definitely can't relax", width: "95%" },
-                    { text: "People love your content but aren't buying: Your engagement is great, DMs are full of praise, but when you open the cart? Crickets", width: "92%" },
-                    { text: "You're terrified of \"next level\" visibility: You know you need to be seen more, price higher, pitch bigger but every time you think about it, your chest tightens", width: "96%" },
-                    { text: "You keep sabotaging right before breakthroughs: You ghost prospects, drop your prices out of nowhere, or mysteriously get sick after a big month", width: "94%" },
-                    { text: "You're stuck between $12K–$35K months and can't crack consistent $50K+: You've outgrown DIY solutions but don't know how to step into the version of yourself who scales without burning out", width: "100%" },
-                    { text: "You're tired of trading time for money: You want real leverage, actual scale, and a business that doesn't require your constant hustle to survive", width: "93%" },
-                    { text: "You suspect your mindset is costing you money: You've got the strategy, the systems, the discipline but something invisible keeps holding you back", width: "97%" }
-                  ].map((item, i) => (
-                    <div 
-                      key={i} 
-                      className="p-6 md:p-8 bg-white/[0.03] border border-white/[0.08] rounded-[2rem] shadow-xl shadow-black/20 backdrop-blur-sm group/chip hover:bg-white/[0.05] hover:border-white/20 transition-all duration-500"
-                      style={{ maxWidth: item.width }}
-                    >
-                      <p className="text-xl md:text-2xl text-white/90 font-light leading-relaxed whitespace-normal italic">
-                        “{item.text}”
-                      </p>
-                    </div>
-                  ))}
+          {/* Mobile Carousel */}
+          <div className="md:hidden relative">
+            <div 
+              ref={galleryRef}
+              onScroll={handleGalleryScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-0"
+            >
+              {galleryImages.map((src, i) => (
+                <div key={i} className="min-w-full snap-center px-2">
+                  <div className="border border-black rounded-[2rem] p-6 bg-white flex items-center justify-center min-h-[300px]">
+                    <img 
+                      src={src} 
+                      alt={`Gallery ${i + 1}`} 
+                      className="w-full h-auto object-contain"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                 </div>
+              ))}
+            </div>
+            
+            {/* Arrows */}
+            <div className="flex justify-between items-center mt-6 px-4">
+              <button 
+                onClick={prevGallery}
+                disabled={galleryIndex === 0}
+                className="w-10 h-10 rounded-full border border-[#7c1d1d] flex items-center justify-center text-[#7c1d1d] transition-all active:text-[#5e1616] active:border-[#5e1616] disabled:opacity-30 focus:outline-none focus:ring-1 focus:ring-[#7c1d1d]/50"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              
+              {/* Dots */}
+              <div className="flex gap-1.5">
+                {galleryImages.map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-1 rounded-full transition-all duration-300 ${galleryIndex === i ? 'w-4 bg-[#7c1d1d]' : 'w-1.5 bg-gray-300/50'}`}
+                  />
+                ))}
               </div>
+
+              <button 
+                onClick={nextGallery}
+                disabled={galleryIndex === galleryImages.length - 1}
+                className="w-10 h-10 rounded-full border border-[#7c1d1d] flex items-center justify-center text-[#7c1d1d] transition-all active:text-[#5e1616] active:border-[#5e1616] disabled:opacity-30 focus:outline-none focus:ring-1 focus:ring-[#7c1d1d]/50"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="wmhq-investment" className="bg-[#f2f2f2] py-32 md:py-48 px-6 overflow-hidden">
+      <section id="wmhq-investment" className="bg-[#fdf2f8] pt-16 pb-32 md:pt-24 md:pb-48 px-6 overflow-hidden">
         <div className="max-w-[1400px] mx-auto">
           <div className="text-center mb-24 space-y-6">
-            <h2 className="text-6xl md:text-8xl font-serif text-black tracking-tightest leading-none">
-              <span className="squiggly-underline">WMHQ</span> Investment
+            <h2 className="text-6xl md:text-8xl font-serif text-[#7c1d1d] tracking-tightest leading-none">
+              WMHQ Investment
             </h2>
             <p className="text-gray-500 text-lg md:text-xl font-light">
-              Get access to WMHQ for 12 months.
+              Join the membership and get access for 12 months.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-20">
-            <div className="bg-transparent p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] border border-[#7c1d1d] flex flex-col justify-between hover:translate-y-[-8px] transition-all duration-500 h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mt-20 max-w-5xl mx-auto">
+            <div className="bg-transparent p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] border border-[#7c1d1d] flex flex-col justify-between hover:translate-y-[-8px] transition-all duration-500 h-full order-2 md:order-1">
               <div className="space-y-10">
                 <div className="space-y-4">
                   <h3 className="text-4xl font-serif italic text-black">Pay in Full</h3>
@@ -957,21 +1294,21 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <ul className="space-y-3">
-                  <PricingBullet text="Instant access to all inclusions for 12 months to WMHQ" />
-                  <PricingBullet text="Bonus: 2x 1:1 calls with Jess Pinili" />
+                  <PricingBullet text="Instant access to every WMHQ inclusion for the full 12 months: live calls, weekly audits, community and vault, all unlocked from day one" />
+                  <PricingBullet text={<><strong>BONUS: 2× private 1:1 calls with Jess</strong>: An opportunity to work directly with Jess on the strategy and blocks specific to your business <strong>(VALUE: $1500)</strong></>} />
                 </ul>
               </div>
               <a 
                 href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full mt-12 py-6 border-2 border-[#7c1d1d] text-[#7c1d1d] bg-transparent text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:bg-[#7c1d1d]/5 transition-all shadow-xl shadow-[#7c1d1d]/10 flex items-center justify-center text-center"
+                className="w-full mt-12 py-6 border-2 border-[#7c1d1d] text-[#7c1d1d] bg-transparent text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#7c1d1d]/5 transition-all shadow-xl shadow-[#7c1d1d]/10 flex items-center justify-center text-center px-4"
               >
-                JOIN WMHQ
+                Become an annual member
               </a>
             </div>
 
-            <div className="bg-white p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] border border-[#7c1d1d] flex flex-col justify-between hover:translate-y-[-8px] transition-all duration-500 relative h-full">
+            <div className="bg-white p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] border border-[#7c1d1d] flex flex-col justify-between hover:translate-y-[-8px] transition-all duration-500 relative h-full order-1 md:order-2">
               <div className="absolute top-5 right-12 text-[10px] uppercase tracking-[0.4em] text-[#7c1d1d] font-black bg-[#7c1d1d]/5 px-4 py-2 rounded-full border border-[#7c1d1d]/10">MOST POPULAR</div>
               <div className="space-y-10 pt-5">
                 <div className="space-y-4">
@@ -982,43 +1319,16 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <ul className="space-y-3">
-                  <PricingBullet text="Instant access to all inclusions for 12 months to WMHQ" />
+                  <PricingBullet text="Instant access to every WMHQ inclusion for 12 months: Business Mastermind, Subconscious Mastery Calls, The Vault, Live Trainings, Ask JP, Community and Tools." />
                 </ul>
               </div>
               <a 
                 href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full mt-12 py-6 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:bg-[#5a1414] transition-all shadow-xl shadow-[#7c1d1d]/20 flex items-center justify-center text-center"
+                className="w-full mt-12 py-6 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#5a1414] transition-all shadow-xl shadow-[#7c1d1d]/20 flex items-center justify-center text-center px-4"
               >
-                JOIN WMHQ
-              </a>
-            </div>
-
-            <div className="bg-transparent p-12 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] border border-[#7c1d1d] flex flex-col justify-between hover:translate-y-[-8px] transition-all duration-500 h-full">
-              <div className="space-y-10">
-                <div className="space-y-4">
-                  <h3 className="text-4xl font-serif italic text-black">WMHQ VIP</h3>
-                  <div className="flex flex-col">
-                    <span className="text-6xl font-serif text-[#7c1d1d]">$1500<span className="text-2xl">/m</span></span>
-                    <span className="text-gray-400 text-sm font-light mt-1">1:1 support & proximity</span>
-                  </div>
-                </div>
-                <ul className="space-y-3">
-                  <PricingBullet text="Instant access to all inclusions for 12 months to WMHQ" />
-                  <PricingBullet text="12x monthly 1:1 calls with Jess Pinili" />
-                  <PricingBullet text="VIP Workshopping Document to collaborate" />
-                  <PricingBullet text="Complimentary access to any paid workshops outside of WMHQ Jess launches" />
-                  <PricingBullet text="Bonus: 30 minute onboarding call" />
-                </ul>
-              </div>
-              <a 
-                href={CHECKOUT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full mt-12 py-6 border-2 border-[#7c1d1d] text-[#7c1d1d] bg-transparent text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:bg-[#7c1d1d]/5 transition-all shadow-xl shadow-[#7c1d1d]/10 flex items-center justify-center text-center"
-              >
-                JOIN WMHQ
+                Join WMHQ monthly
               </a>
             </div>
           </div>
@@ -1032,7 +1342,6 @@ const App: React.FC = () => {
                 <p>When you join Woman Mastery HQ (WMHQ), you receive 12 months of direct access to all membership inclusions: including audits, live calls, and the continuously evolving Vault of resources.</p>
                 <p>With the <strong>Pay in Full</strong> option, you receive immediate access to WMHQ for 12 months. At the end of your 12-month term, your membership will automatically transition to a month-to-month subscription at the current membership rate at that time. If you wish to cancel after your initial 12 months, 30 days’ written notice via email is required prior to your renewal date.</p>
                 <p>With <strong>Monthly Payments</strong>, you commit to a 12-month membership term, billed monthly. You will receive full access to all WMHQ inclusions for the duration of your active membership. After your initial 12-month term is complete, your membership will continue on a month-to-month basis at the current rate, unless 30 days’ written notice via email is provided prior to your renewal date.</p>
-                <p>With <strong>WMHQ VIP</strong>, you commit to a 12-month membership term, billed monthly. You will receive full access to all WMHQ inclusions for the duration of your active membership. After your initial 12-month term is complete, your membership will continue on a month-to-month basis at the current rate, unless 30 days’ written notice via email is provided prior to your renewal date.</p>
               </div>
             </AccordionItem>
             <AccordionItem title="Pay in full bonus?">
@@ -1073,6 +1382,49 @@ const App: React.FC = () => {
         </div>
       </section>
 
+      <section className="bg-[#f9f7f2] py-32 px-6 border-t border-black/5 relative z-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="max-w-5xl mx-auto space-y-4">
+            <DarkAccordionItem title="IS THIS EVEN FOR ME?">
+              <div className="space-y-6">
+                <p><span className="font-bold">The Myth:</span> “I’m not far enough along yet. This is for women who already have it figured out — a big audience, consistent income, or at least know what they’re doing. I should wait until I’m more ‘ready.’”</p>
+                <p><span className="font-bold">The Truth:</span> You don’t need to be further along. You need support that meets you where you are. The women who join “when they’re ready” are still waiting two years later. The women who join now are running $30K months by this time next year.</p>
+              </div>
+            </DarkAccordionItem>
+            
+            <DarkAccordionItem title="I’VE TRIED EVERYTHING. WHY WOULD THIS BE DIFFERENT?">
+              <div className="space-y-6">
+                <p><span className="font-bold">The Myth:</span> “I’ve bought the courses, hired the coaches, done the mindset work, learned the strategies… and I’m still stuck. Maybe it’s me. Maybe nothing will actually work.”</p>
+                <p><span className="font-bold">The Truth:</span> It’s not that nothing works, you were only getting half the solution. Business courses give you strategy but don’t address why you can’t execute. Mindset coaching helps you feel better but doesn’t build a business model. WMHQ treats your mindset and marketing as the same system, so you finally get both.</p>
+              </div>
+            </DarkAccordionItem>
+            
+            <DarkAccordionItem title="I DON’T HAVE TIME FOR ANOTHER PROGRAM.">
+              <div className="space-y-6">
+                <p><span className="font-bold">The Myth:</span> “I’m already drowning. I can barely keep up with posting, client work/customer service, life. Adding another membership will just overwhelm me more. I need to get my shit together first, then I can invest.”</p>
+                <p><span className="font-bold">The Truth:</span> You’re overwhelmed because you’re doing it alone. The right support doesn’t add to your plate, it clears it. You stop guessing what to post, stop consuming 47 free trainings, and start executing with clarity. You don’t need more time. You need to stop wasting the time you have.</p>
+              </div>
+            </DarkAccordionItem>
+            
+            <DarkAccordionItem title="WHAT IF I INVEST AND IT DOESN’T WORK FOR ME?">
+              <div className="space-y-6">
+                <p><span className="font-bold">The Myth:</span> “I’ve invested before and didn’t get results. What if I join, don’t do the work, and I’m just out $5K with nothing to show for it? What if I’m the problem?”</p>
+                <p><span className="font-bold">The Truth:</span> You’re not doing this alone anymore. You get bi-weekly live coaching, real-time feedback, subconscious work that dissolves the patterns making you quit, and a community that won’t let you disappear. The real question isn’t “what if it doesn’t work?” It’s: “How much longer are you willing to stay stuck hoping something changes without changing anything?”</p>
+              </div>
+            </DarkAccordionItem>
+          </div>
+
+          <div className="mt-16 flex justify-center">
+            <button 
+              onClick={scrollToPricing}
+              className="group relative w-full md:w-auto px-16 py-7 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.5em] font-black rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-[#7c1d1d]/30"
+            >
+              → GET ACCESS FOR 12 MONTHS
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Love Letters Section */}
       <section className="bg-dark py-32 md:py-48 relative overflow-hidden rounded-t-[4rem] md:rounded-t-[6rem]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#7c1d1d]/5 blur-[120px] rounded-full pointer-events-none"></div>
@@ -1086,15 +1438,16 @@ const App: React.FC = () => {
             <div className="absolute -bottom-6 -left-12 w-12 h-12 border-b-2 border-l-2 border-[#7c1d1d]/30 rounded-bl-full animate-pulse delay-700"></div>
           </div>
         </div>
-        <div className="relative w-full overflow-hidden py-12 ribbon-container group">
-          <div className="flex animate-marquee max-md:animate-[marquee_24s_linear_infinite] whitespace-nowrap gap-8 hover:[animation-play-state:paused] cursor-grab active:cursor-grabbing">
+        <div className="relative w-full py-12 group">
+          {/* Desktop Marquee - Preserved */}
+          <div className="hidden md:flex animate-marquee whitespace-nowrap gap-8 hover:[animation-play-state:paused] cursor-grab active:cursor-grabbing ribbon-container overflow-hidden">
             {[...testimonials, ...testimonials].map((t, idx) => (
               <div 
                 key={`${t.id}-${idx}`} 
-                className="inline-flex flex-col items-center justify-center w-[400px] md:w-[600px] bg-[#f5f2ea] p-10 md:p-12 rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.2)] border border-white/5 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-2"
+                className="inline-flex flex-col items-center justify-center w-[600px] bg-[#f5f2ea] p-12 rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.2)] border border-white/5 transition-all duration-700 hover:scale-[1.03] hover:-translate-y-2"
               >
                 <div className="text-4xl mb-8 filter drop-shadow-md">💌</div>
-                <p className="text-xl md:text-2xl text-black/80 font-serif italic leading-relaxed text-center mb-10 whitespace-normal">
+                <p className="text-2xl text-black/80 font-serif italic leading-relaxed text-center mb-10 whitespace-normal">
                   “{t.text}”
                 </p>
                 <div className="flex flex-col items-center gap-1">
@@ -1102,6 +1455,59 @@ const App: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Mobile Carousel - Optimized */}
+          <div className="md:hidden px-6">
+            <div 
+              ref={testimonialRef}
+              onScroll={handleTestimonialScroll}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+            >
+              {testimonials.map((t) => (
+                <div 
+                  key={t.id} 
+                  className="min-w-full snap-center flex flex-col items-center justify-center bg-[#f5f2ea] p-10 rounded-[4rem] shadow-[0_20px_40px_rgba(0,0,0,0.2)] border border-white/5 min-h-[450px]"
+                >
+                  <div className="text-4xl mb-8 filter drop-shadow-md">💌</div>
+                  <p className="text-xl text-black/80 font-serif italic leading-relaxed text-center mb-10">
+                    “{t.text}”
+                  </p>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-[#7c1d1d] font-bold">{t.title}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Mobile Navigation Controls */}
+            <div className="flex justify-center items-center mt-10 gap-6">
+               <button 
+                onClick={() => scrollToTestimonial(Math.max(0, testimonialIndex - 1))}
+                className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                aria-label="Previous testimonial"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              
+              <div className="flex gap-1.5 overflow-hidden max-w-[120px]">
+                {testimonials.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => scrollToTestimonial(idx)}
+                    className={`h-1 rounded-full transition-all duration-300 flex-shrink-0 ${testimonialIndex === idx ? 'w-6 bg-[#7c1d1d]' : 'w-2 bg-white/20'}`}
+                  />
+                ))}
+              </div>
+
+              <button 
+                onClick={() => scrollToTestimonial(Math.min(testimonials.length - 1, testimonialIndex + 1))}
+                className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                aria-label="Next testimonial"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
