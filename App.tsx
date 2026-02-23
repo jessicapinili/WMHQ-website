@@ -551,21 +551,23 @@ const App: React.FC = () => {
       </section>
 
       {/* VSL Section */}
-      <section className="bg-[#212121] py-24 md:py-32 px-6 overflow-hidden relative z-20">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tightest leading-tight mb-12">
-            Watch the breakdown.
-          </h2>
-          <div className="max-w-[900px] mx-auto relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
-            <iframe
-              src="https://www.loom.com/embed/8744a2d230244af685987a87d08df158"
-              frameBorder="0"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            ></iframe>
-          </div>
-        </div>
-      </section>
+<section className="bg-black py-24 md:py-32 px-6 overflow-hidden relative z-20">
+  <div className="max-w-7xl mx-auto text-center">
+    <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tightest leading-tight mb-12">
+      Watch the breakdown.
+    </h2>
+
+    <div className="max-w-[900px] mx-auto relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 bg-black">
+      <iframe
+        src="https://www.loom.com/embed/8744a2d230244af685987a87d08df158"
+        frameBorder="0"
+        allowFullScreen
+        className="absolute inset-0 w-full h-full"
+        title="WMHQ VSL"
+      />
+    </div>
+  </div>
+</section>
 
       {/* Cycle Diagram Section */}
       <section className="bg-[#f9f7f2] py-12 lg:py-20 px-6 overflow-hidden relative z-20">
