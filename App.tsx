@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion } from "framer-motion";
 import { INITIAL_STATE } from './constants';
 import { AppState } from './types';
 import EditableText from './components/EditableText';
