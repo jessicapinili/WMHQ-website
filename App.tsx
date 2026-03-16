@@ -413,7 +413,8 @@ const App: React.FC = () => {
     }
   };
 
-  const CHECKOUT_URL = 'https://www.jessicapinili.com/offers/wyacfFGV/checkout';
+  const CHECKOUT_PIF_URL = "https://www.jessicapinili.com/offers/cLjvqLoA";
+const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
 
   return (
     <div className="min-h-screen font-sans selection:bg-[#7c1d1d] selection:text-white bg-cream">
@@ -1301,7 +1302,7 @@ const App: React.FC = () => {
                 </ul>
               </div>
               <a 
-                href={CHECKOUT_URL}
+                href={CHECKOUT_PIF_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full mt-12 py-6 border-2 border-[#7c1d1d] text-[#7c1d1d] bg-transparent text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#7c1d1d]/5 transition-all shadow-xl shadow-[#7c1d1d]/10 flex items-center justify-center text-center px-4"
@@ -1325,7 +1326,7 @@ const App: React.FC = () => {
                 </ul>
               </div>
               <a 
-                href={CHECKOUT_URL}
+                href={CHECKOUT_MONTHLY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full mt-12 py-6 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#5a1414] transition-all shadow-xl shadow-[#7c1d1d]/20 flex items-center justify-center text-center px-4"
