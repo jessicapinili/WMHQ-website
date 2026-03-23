@@ -960,6 +960,9 @@ const App: React.FC = () => {
                   <div className={`text-[10px] uppercase tracking-widest font-black mb-2 transition-opacity ${activePhase === idx ? 'opacity-60 text-red-400' : 'opacity-40 group-hover:opacity-100'}`}>Phase {phase.id}</div>
                   <div className={`font-serif italic text-xl md:text-2xl leading-tight ${activePhase === idx ? 'text-white' : ''}`}>
                     {phase.tag}
+                    <div className="md:hidden text-[10px] opacity-60 mt-1 font-sans not-italic tracking-normal">
+                      (Read this phase below)
+                    </div>
                   </div>
                 </button>
               ))}
