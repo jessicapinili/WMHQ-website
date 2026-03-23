@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from "framer-motion";
+import { motion } from 'motion/react';
 import { INITIAL_STATE } from './constants';
 import { AppState } from './types';
 import EditableText from './components/EditableText';
@@ -413,8 +413,7 @@ const App: React.FC = () => {
     }
   };
 
-  const CHECKOUT_PIF_URL = "https://www.jessicapinili.com/offers/cLjvqLoA";
-const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
+  const CHECKOUT_URL = 'https://www.jessicapinili.com/offers/wyacfFGV/checkout';
 
   return (
     <div className="min-h-screen font-sans selection:bg-[#7c1d1d] selection:text-white bg-cream">
@@ -461,20 +460,17 @@ const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
           <div className="max-w-2xl mx-auto lg:mx-0 mt-6 lg:mt-8 space-y-6">
             <div className="hidden lg:block space-y-4 text-base md:text-xl text-black font-medium leading-relaxed md:leading-relaxed tracking-wide text-center lg:text-left">
               <p>
-                Woman Mastery HQ holds female entrepreneurs accountable in building a sustainable path to consistent $20K–$50K months.
-              </p>
-              <p>
-                Without rebuilding your revenue from scratch every month, over-delivering to compensate, or pulling back every time it's time to scale.
+                For the woman who has proven she can build and is ready to stop being the reason it stalls.
               </p>
             </div>
-            <div className="lg:hidden text-lg text-black font-medium leading-relaxed tracking-wide text-center px-4">
+            <div className="lg:hidden text-sm text-black font-medium leading-relaxed tracking-wide text-center px-4">
               <p>
-                A sustainable path to consistent $20K–$50K months without rebuilding from scratch every month.
+                Woman Mastery HQ is where $20K+ months stop being a fluke and start being the floor. Strategy, structure, and the identity work that makes scaling feel like a natural next step, not a threat.
               </p>
             </div>
             <div className="opacity-70 hidden lg:block">
               <p className="text-sm md:text-base text-black font-medium leading-relaxed tracking-wide text-center lg:text-left">
-                Inside WMHQ, we tighten your positioning, structure how money consistently flows into your business, and dismantle the subconscious patterns that make growth feel heavier than it should at your level.
+                Woman Mastery HQ is where $20K+ months stop being a fluke and start being the floor. Strategy, structure, and the identity work that makes scaling feel like a natural next step, not a threat.
               </p>
             </div>
           </div>
@@ -552,23 +548,21 @@ const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
       </section>
 
       {/* VSL Section */}
-<section className="bg-black py-24 md:py-32 px-6 overflow-hidden relative z-20">
-  <div className="max-w-7xl mx-auto text-center">
-    <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tightest leading-tight mb-12">
-      Watch the breakdown.
-    </h2>
-
-    <div className="max-w-[900px] mx-auto relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 bg-black">
-      <iframe
-        src="https://www.loom.com/embed/8744a2d230244af685987a87d08df158"
-        frameBorder="0"
-        allowFullScreen
-        className="absolute inset-0 w-full h-full"
-        title="WMHQ VSL"
-      />
-    </div>
-  </div>
-</section>
+      <section className="bg-[#212121] py-24 md:py-32 px-6 overflow-hidden relative z-20">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tightest leading-tight mb-12">
+            Watch the breakdown.
+          </h2>
+          <div className="max-w-[900px] mx-auto relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/5">
+            <iframe
+              src="https://www.loom.com/embed/8744a2d230244af685987a87d08df158"
+              frameBorder="0"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+      </section>
 
       {/* Cycle Diagram Section */}
       <section className="bg-[#f9f7f2] py-12 lg:py-20 px-6 overflow-hidden relative z-20">
@@ -1302,7 +1296,7 @@ const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
                 </ul>
               </div>
               <a 
-                href={CHECKOUT_PIF_URL}
+                href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full mt-12 py-6 border-2 border-[#7c1d1d] text-[#7c1d1d] bg-transparent text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#7c1d1d]/5 transition-all shadow-xl shadow-[#7c1d1d]/10 flex items-center justify-center text-center px-4"
@@ -1326,7 +1320,7 @@ const CHECKOUT_MONTHLY_URL = "https://www.jessicapinili.com/offers/wyacfFGV";
                 </ul>
               </div>
               <a 
-                href={CHECKOUT_MONTHLY_URL}
+                href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full mt-12 py-6 bg-[#7c1d1d] text-white text-[12px] uppercase tracking-[0.2em] md:tracking-[0.5em] font-black rounded-2xl hover:bg-[#5a1414] transition-all shadow-xl shadow-[#7c1d1d]/20 flex items-center justify-center text-center px-4"
