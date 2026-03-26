@@ -414,19 +414,7 @@ const App: React.FC = () => {
   };
 
   const CHECKOUT_URL = 'https://www.jessicapinili.com/offers/wyacfFGV/checkout';
-```typescript
-useEffect(() => {
-  const path = window.location.pathname;
-  const redirects: Record<string, string> = {
-    '/youtube': 'https://www.womanmasteryhq.com?utm_source=youtube&utm_medium=link-in-bio&utm_campaign=wmhq-membership',
-    '/instagram': 'https://www.womanmasteryhq.com?utm_source=instagram&utm_medium=link-in-bio&utm_campaign=wmhq-membership',
-    '/tiktok': 'https://www.womanmasteryhq.com?utm_source=tiktok&utm_medium=link-in-bio&utm_campaign=wmhq-membership',
-  };
-  if (redirects[path]) {
-    window.location.href = redirects[path];
-  }
-}, []);
-```
+
   return (
     <div className="min-h-screen font-sans selection:bg-[#7c1d1d] selection:text-white bg-cream">
       
